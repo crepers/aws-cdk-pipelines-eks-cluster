@@ -1,8 +1,10 @@
-import * as cdk from "@aws-cdk/core";
-import eks = require("@aws-cdk/aws-eks");
-import ec2 = require("@aws-cdk/aws-ec2");
-import iam = require("@aws-cdk/aws-iam");
-import * as ssm from "@aws-cdk/aws-ssm";
+import { Construct } from 'constructs';
+import { Aws, CfnJson, Stack, StackProps } from 'aws-cdk-lib';      
+import * as route53 from 'aws-cdk-lib/aws-route53';
+import * as eks from 'aws-cdk-lib/aws-eks';
+import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as ssm from 'aws-cdk-lib/aws-ssm';
 
 import { EksManagedNodeGroup } from "./infrastructure/eks-mng";
 import { AWSLoadBalancerController } from "./infrastructure/aws-load-balancer-controller";
@@ -13,13 +15,13 @@ import { Calico } from "./infrastructure/calico";
 import { Prometheus } from "./infrastructure/prometheus";
 import { Echoserver } from "./application/echoserver";
 
-export interface EksClusterStackProps extends cdk.StackProps {
+export interface EksClusterStackProps extends StackProps {
   clusterVersion: eks.KubernetesVersion;
   nameSuffix: string;
 }
 
-export class EksClusterStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props: EksClusterStackProps) {
+export class EksClusterStack extends Stack {
+  constructor(scope: Construct, id: string, props: EksClusterStackProps) {
     super(scope, id, props);
 
     const vpc = new ec2.Vpc(this, "Vpc", { maxAzs: 3 });
@@ -35,7 +37,7 @@ export class EksClusterStack extends cdk.Stack {
     const aud = `${cluster.clusterOpenIdConnectIssuer}:aud`;
     const sub = `${cluster.clusterOpenIdConnectIssuer}:sub`;
 
-    const conditions = new cdk.CfnJson(this, "awsNodeOIDCCondition", {
+    const conditions = new CfnJson(this, "awsNodeOIDCCondition", {
       value: {
         [aud]: "sts.amazonaws.com",
         [sub]: "system:serviceaccount:kube-system:aws-node",
@@ -44,7 +46,7 @@ export class EksClusterStack extends cdk.Stack {
 
     const awsNodeIamRole = new iam.Role(this, "awsNodeIamRole", {
       assumedBy: new iam.WebIdentityPrincipal(
-        `arn:aws:iam::${cdk.Aws.ACCOUNT_ID}:oidc-provider/${cluster.clusterOpenIdConnectIssuer}`
+        `arn:aws:iam::${Aws.ACCOUNT_ID}:oidc-provider/${cluster.clusterOpenIdConnectIssuer}`
       ).withConditions({
         StringEquals: conditions,
       }),

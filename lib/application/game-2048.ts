@@ -1,15 +1,16 @@
-import * as cdk from "@aws-cdk/core";
-import eks = require("@aws-cdk/aws-eks");
 import * as yaml from 'js-yaml';
 import request from 'sync-request';
+
+import { Construct } from 'constructs';
+import * as eks from 'aws-cdk-lib/aws-eks';
 
 
 export interface Game2048Props {
   cluster: eks.Cluster;
 }
 
-export class Game2048 extends cdk.Construct {
-  constructor(scope: cdk.Construct, id: string, props: Game2048Props) {
+export class Game2048 extends Construct {
+  constructor(scope: Construct, id: string, props: Game2048Props) {
     super(scope, id);
     
     const manifestUrl = 'https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/examples/2048/2048_full.yaml';

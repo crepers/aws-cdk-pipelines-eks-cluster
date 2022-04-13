@@ -1,16 +1,17 @@
-import * as cdk from "@aws-cdk/core";
-import eks = require("@aws-cdk/aws-eks");
-import iam = require("@aws-cdk/aws-iam");
-import ec2 = require("@aws-cdk/aws-ec2");
+import { Construct } from 'constructs';
+import * as eks from 'aws-cdk-lib/aws-eks';
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as ec2 from 'aws-cdk-lib/aws-ec2';
+
 
 export interface EksManagedNodeGroupProps {
   cluster: eks.Cluster;
   nameSuffix: string;
 }
 
-export class EksManagedNodeGroup extends cdk.Construct {
+export class EksManagedNodeGroup extends Construct {
   constructor(
-    scope: cdk.Construct,
+    scope: Construct,
     id: string,
     props: EksManagedNodeGroupProps
   ) {

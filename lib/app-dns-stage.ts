@@ -1,5 +1,6 @@
-import { Construct, Environment, StackProps, Stage } from "@aws-cdk/core";
 import { AppDnsStack } from "./app-dns-stack";
+import { Construct } from 'constructs';
+import { Environment, StackProps, Stage } from 'aws-cdk-lib';      
 
 export interface AppDnsStageProps extends StackProps {
   envName: string;

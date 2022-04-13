@@ -1,5 +1,7 @@
-import eks = require("@aws-cdk/aws-eks");
-import { Construct, Environment, StackProps, Stage } from "@aws-cdk/core";
+import { Construct } from 'constructs';
+import { Aws, Environment, Stack, Stage, StackProps } from 'aws-cdk-lib';      
+import * as eks from 'aws-cdk-lib/aws-eks';
+
 import { EksClusterStack } from "./eks-cluster-stack";
 
 export interface EksClusterStageProps extends StackProps {

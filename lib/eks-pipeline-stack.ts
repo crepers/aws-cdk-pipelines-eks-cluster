@@ -1,27 +1,24 @@
-import * as cdk from "@aws-cdk/core";
-import eks = require("@aws-cdk/aws-eks");
-import * as ssm from "@aws-cdk/aws-ssm";
-import {
-  CodePipeline,
-  CodePipelineSource,
-  ShellStep,
-  ManualApprovalStep,
-} from "@aws-cdk/pipelines";
+import { Construct } from 'constructs';
+import { Aws, SecretValue, Stack, Stage, StackProps } from 'aws-cdk-lib';      
+import * as eks from 'aws-cdk-lib/aws-eks';
+import * as ssm from 'aws-cdk-lib/aws-ssm';
+import { CodePipeline, CodePipelineSource, ShellStep, ManualApprovalStep } from 'aws-cdk-lib/pipelines';
 import { EksClusterStage } from "./eks-cluster-stage";
 import { AppDnsStage } from "./app-dns-stage";
 
-export class EksPipelineStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+
+export class EksPipelineStack extends Stack {
+  constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
     const pipeline = new CodePipeline(this, "Pipeline", {
       synth: new ShellStep("Synth", {
         input: CodePipelineSource.gitHub(
-          "aws-samples/aws-cdk-pipelines-eks-cluster",
+          "crepers/aws-cdk-pipelines-eks-cluster",
           "main",
           {
             authentication:
-              cdk.SecretValue.secretsManager("github-oauth-token"),
+              SecretValue.secretsManager("github-oauth-token"),
           }
         ),
         commands: ["npm ci", "npm run build", "npx cdk synth"],
